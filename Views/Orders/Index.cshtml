@@ -1,0 +1,35 @@
+﻿@model IEnumerable<demoASP.Models.Order>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<table class="table">
+    <tr>
+        <th>No.</th>
+        <th>Order Date</th>
+        <th>Order No.</th>
+        <th>Customer Company</th>
+        <th>Employee Name</th>
+        <th></th>
+    </tr>
+    @{int i = 0;}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@(++i)</td>
+            <td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.OrderId)</td>
+            <td>@Html.DisplayFor(modelItem => item.Customer.CompanyName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Employee.FirstName)</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.OrderId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.OrderId }) |
+            </td>
+        </tr>
+    }
+
+</table>

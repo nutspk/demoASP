@@ -224,6 +224,7 @@
     <Content Include="Views\Orders\Index.cshtml" />
     <Content Include="Views\Orders\GetOrderDetail.cshtml" />
     <Content Include="Views\TestOrderDetail.cshtml" />
+    <Content Include="Views\Shared\navbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

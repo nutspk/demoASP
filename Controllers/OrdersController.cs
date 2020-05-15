@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using demoASP.Data;
 using demoASP.Models;
+using Newtonsoft.Json;
 
 namespace demoASP.Controllers
 {
@@ -31,8 +32,7 @@ namespace demoASP.Controllers
                 .FirstOrDefault(o => o.OrderId == id);
 
             ViewBag.Products = new SelectList(db.Products, "ProductID", "ProductName", "-- Please select --");
-            ViewBag.Product = db.Products.ToList();
-
+            ViewBag.Product = JsonConvert.SerializeObject(db.Products.ToList());
             if (order == null) return HttpNotFound();
 
             return View(order);
@@ -73,8 +73,6 @@ namespace demoASP.Controllers
                 od.Quantity = item.Quantity;
             }
 
-            
-            
             o.OrderItem.Add(od);
 
             db.SaveChanges();

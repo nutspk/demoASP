@@ -40,6 +40,18 @@ namespace demoASP.Controllers
             return View(product);
         }
 
+        public ActionResult GetProductDetail(int? id) {
+            var product = db.Products.Include(p => p.Category).Include(p => p.Supplier)
+                           .FirstOrDefault(p => p.ProductId == id);
+            var res = new
+            {
+                success = "success",
+                data = product
+            };
+
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Products/Create
         public ActionResult Create()
         {

@@ -85,37 +85,50 @@
     </dl>
 
     <hr />
-        @*<h4>Order Item</h4>
+    @*<h4>Order Item</h4>
 
         <div id="tbl"></div>*@
-<table class="table table-bordered w-75">
-    <thead>
-        <tr>
-            <th>Product name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                @Html.DropDownList("ProductId", (SelectList)ViewBag.Products, htmlAttributes: new { @class = "form-control" })
-            </td>
-            <td>
-                <label id="lblPrice"></label>
-            </td>
-            <td>
-                <input id="txtQuantity" type="number" class="form-control" />
-            </td>
-            <td><button id="btnAdd" type="button" class="btn btn-sm btn-success" > Add </button></td>
-        </tr>
-    </tbody>
-</table>
+    <table class="table table-bordered w-75">
+        <thead>
+            <tr>
+                <th>Product name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DropDownList("ProductId", 
+                        (SelectList)ViewBag.Products, 
+                        htmlAttributes: new { 
+                            @class = "form-control", 
+                            onchange = @"handlerSelectedChange(this.value);" 
+                        })
+                </td>
+                <td>
+                    <div id="price"></div>
+                </td>
+                <td>
+                    <input id="txtQuantity" type="number" class="form-control" />
+                </td>
+                <td><button id="btnAdd" type="button" class="btn btn-sm btn-success"> Add </button></td>
+            </tr>
+        </tbody>
+    </table>
 
     <hr />
     <h4>Order Item</h4>
-    <div id="tbl"></div>
+
+    <h5>Table of PartialView</h5>
+    @{ Html.RenderPartial("GetOrderDetail", Model); }
+
+    <h5>Table of Jquery AJAX</h5>
+    <div id="tbl">
+    </div>
+
+    <h5>Table of Static page</h5>
     <table class="table table-bordered table-striped hidden">
         <thead>
             <tr>
@@ -165,6 +178,8 @@
     @Html.ActionLink("Back to List", "Index", "Customers")
 </p>
 
+<input id="hProducts" type="hidden" value="@ViewBag.Product" />
+
 @section Scripts {
     <script type="text/javascript">
         updateUI();
@@ -173,6 +188,19 @@
             addOrderItem();
         })
 
+        function handlerSelectedChange(value) {
+            let products = $("#hProducts").val();
+           
+                let js = (products) ? JSON.parse(products) : null;
+                if (js) {
+                   let p = js.find((val, idx) => {
+                        return val.ProductId == value;
+                   });
+
+                   if (p) $("#price").html(p.UnitPrice);
+                }
+        }
+
         function addOrderItem() {
             const url = '@Url.Action("AddOrderDetail", "Orders", new { id = Model.OrderId })';
 
@@ -180,7 +208,9 @@
                 productId: $("#ProductId").val(),
                 quantity: $("#txtQuantity").val(),
             }
+
             console.log(data);
+
             $.post(url, data).then((res) => {
                 updateUI();
                 $("#txtQuantity").val("");
@@ -189,9 +219,14 @@
 
         function updateUI() {
             const url = '@Url.Action("GetOrderDetail", "Orders", new { id = Model.OrderId })';
+            //    url = '/Orders/GetOrderDetail/1'
 
             $.get(url).then((res) => {
+                // call api ไปถึง ตารางใน partial view "GetOrderDetail.cshtml"
+
                 $("#tbl").html(res);
+                // กำหนดให้ element ที่มี id="tbl" เป็นตารางจาก partial view
+
             });
         }
     </script>
